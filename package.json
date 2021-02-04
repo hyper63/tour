@@ -1,0 +1,16 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@vercel/fetch": "^6.1.0",
+    "daggy": "^1.4.0",
+    "form-data": "^3.0.0",
+    "node-fetch": "^2.6.1",
+    "ramda": "^0.27.1"
+  },
+  "scripts": {
+    "play": "npx nodemon index.js -q -x 'clear && node'"
+  }
+}
