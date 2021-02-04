@@ -15,28 +15,25 @@ const $ = request(url, token)
 async function main() {
   let res = 'Welcome to the hyper63 tour!'
   const app = 'twilson63-movies'
+//  res = await $.put(`/data/${app}`)
+  //res = await $.post(`/data/${app}`, Movie('Avengers', '2012', [ 'sci-fi', 'action']))
+  //res = await $.post(`/data/${app}`, Movie('GroundhogDay', '1993', [ 'fantasy', 'comedy']))
   /*
-  res = await $.put(`/search/${app}`, { 
-    fields: ['title', 'year'],
-    storeFields: ['id', 'type']
-  })
+  let movie = await $.get(`/data/${app}/ghostbusters-1984`)
+  movie.poster = 'ghostbusters.jpg'
+  res = await $.put(`/data/${app}/foo`, movie)
   */
-  /*
-  res = await $.post(`/search/${app}/_bulk`, [Movie('GroundhogDay', '1993', []), 
-    Movie('Avengers', '2012', [])
-  ])
-  */
-  /*
-  res = await $.post(`/search/${app}`, {
-    key: 'ghostbusters-1984', 
-    doc: Movie('Ghostbusters', '1984', [])
+  
+  res = await $.post(`/data/${app}/_query`, {
+    selector: {
+      type: 'movie',
+      year: {
+        $gt: '2000'
+      }
+    },
   })
-  */
-  res = await $.post(`/search/${app}/_query`, {
-    query: 'Avengers'
-  })
+  console.log(res)
 
-  console.log(JSON.stringify(res))
 
 }
 
