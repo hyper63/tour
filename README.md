@@ -25,8 +25,12 @@ yarn
 yarn play
 ```
 
-Open the index.js file in your editor, everytime you type, you should see the results
+Open the `index.js` file in your editor, everytime you type, you should see the results
 appear in your terminal.
+
+In the `index.js` file you will notice a `sandbox` section, this is where you want to put the code snippets during the tour, while you can cut and paste, I would recommend you copy them and then save the `index.js`, and see the results appear in your terminal window.
+
+> NOTE: after each section, there will be a note to `clear the sandbox` this means to delete all of the code between the `<sandbox></sandbox>`
 
 ---
 
@@ -38,31 +42,150 @@ create a data store, in the main function
 let app = 'yourname-here' + '-movies' // must be lowercase and no spaces
 res = await $.put(`/data/${app}`) // create data store
 ```
+> Save `index.js`
+
+expected output
+
+``` sh
+#> {ok: 'true'}
+```
+
+> NOTE: clear sandbox
 
 remove data store
+
+We can remove the data store by using the `DELETE` method
+
+> NOTE: in the future, we may require a querystring param `confirm`
+> to make sure that you want to truly delete the data store.
 
 ``` js
 res = await $.delete(`/data/${app}`) // remove data store
 ```
+> Save `index.js`
+
+expected output
+
+``` sh
+{ ok: true }
+```
+
+> NOTE: clear the sandbox
+
 
 add a document
 
+Lets add a document to our new store, we have these movie documents 
+already created above. Using the put command, we will re-create
+the data store, and then using the post command we will create a
+new document.
+
+In between the `<sandbox></sandbox>` comments add the following
+commands.
+
 ``` js
-res = await $.put(`/data/${app}`) // create data store
-res = await $.post(`/data/${app}`, Movie('Ghostbusters', '1984', ['comedy', 'action']))
+await $.put(`/data/${app}`) // create data store
+res = await $.post(`/data/${app}`, ghostbusters)
 ```
 
+> Save `index.js`
+
+expected output
+
+``` sh
+#> { ok: true, id: 'ghostbusters-1984' }
+```
+
+> NOTE: clear the sandbox 
 
 get a document
 
+Now that we saved a document, lets get the document by id
+
+``` js
+res = await $.get(`/data/${app}/${ghostbusters.id}`)
+```
+
+> Save `index.js`
+
+expected output
+
+``` json
+{"id":"ghostbusters-1984","type":"movie","title":"Ghostbusters","year":"1984","genres":["action","comedy"]}
+```
+
+> NOTE: clear sandbox
+
 update a document
+
+We can update a document using the put method.
+
+``` js
+ghostbusters = {...ghostbusters, poster: 'ghostbusters.jpg'}
+// update document
+res = await $.put(`/data/${app}/${ghostbusters.id}`, ghostbusters)
+```
+
+> Save `index.js`
+
+expected output
+
+```
+{"ok":true,"id":"ghostbusters-1984"}
+```
+
+> NOTE: clear sandbox
 
 remove a document
 
+We can also remove documents, by sending a `DELETE` command.
+
+``` js
+res = await $.delete(`/data/${app}/${ghostbusters.id}`)
+```
+
+> Save `index.js`
+
+expected output
+
+``` json
+{"ok":true,"id":"ghostbusters-1984"}
+```
+
+> NOTE: clear sandbox
+
 query a document
 
+hyper63 uses a powerful object structured query language similar to 
+mongodb, on the backend it transforms it to the appropriate query for 
+the given database.
 
-> NOTE: copy file to data-example.js
+You can view all of the options here: https://docs.hyper63.com
+
+In this tutorial, we will do a search on document type and year
+less than 2000.
+
+
+``` js
+res = await $.post(`/data/${app}/_query`, {
+  selector: {
+    type: 'movie',
+    year: {
+      $lt: '2000'
+    }
+  }
+})
+```
+
+> Save `index.js`
+
+expected output
+
+``` json
+{"ok":true,"docs":[{"id":"groundhogday-1993","type":"movie","title":"GroundhogDay","year":"1993","genres":["fantasy","comedy"]}]}
+```
+
+> NOTE: clear sandbox
 
 ---
 
