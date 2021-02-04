@@ -11,6 +11,7 @@ const Movie = (title='', year='1980', genres=[]) =>
 // Groundhog Day, 1993, [comedy, fantasy, romance]
 // Avengers, 2012, [action, adventure, sci-fi]
 
+const $ = request(url, token)
 async function main() {
   let res = 'Welcome to the hyper63 tour!'
 
