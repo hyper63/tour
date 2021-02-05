@@ -167,6 +167,12 @@ less than 2000.
 
 
 ``` js
+// first lets add our documents
+
+res = await $.post(`/data/${app}`, ghostbusters)
+res = await $.post(`/data/${app}`, groundhogday)
+res = await $.post(`/data/${app}`, avengers)
+
 res = await $.post(`/data/${app}/_query`, {
   selector: {
     type: 'movie',
