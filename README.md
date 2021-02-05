@@ -1,6 +1,6 @@
 # Tour of hyper63 API
 
-👋Hello!
+👋 Hello!
 
 Welcome to the tour of the hyper63 services, in this tour, we will guide you through the 
 📦 data service, 💲 cache service, and 🔎 search service. You will get a feel for how they work.
