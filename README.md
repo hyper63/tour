@@ -222,15 +222,15 @@ Creating a cache store is just like creating a
 data store. Instead of using the data service,
 we use the cache service.
 
-```
-res = await $.put('/cache/${app}')
+``` js
+res = await $.put(`/cache/${app}`)
 ```
 
 > NOTE: save 'index.js'
 
 expected output
 
-```
+``` sh
 {"ok": true }
 ```
 
@@ -240,15 +240,15 @@ remove a cache store
 
 removing a cache store with the DELETE method
 
-```
-res = await $.delete('/cache/${app}')
+``` js
+res = await $.delete(`/cache/${app}`)
 ```
 
 > NOTE: save 'index.js'
 
 expected output
 
-```
+``` sh
 {"ok": true}
 ```
 
@@ -259,8 +259,8 @@ a cache contains a key and a value,
 the key must be a string, and a value,
 which can be any json parsable value.
 
-```
-res = await $.post('/cache/${app}', {
+``` js
+res = await $.post(`/cache/${app}`, {
   key: 'action-2012-avengers',
   value: avengers
 })
@@ -270,7 +270,7 @@ res = await $.post('/cache/${app}', {
 
 expected output
 
-```
+``` sh
 { "ok": true }
 ```
 
