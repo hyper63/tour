@@ -14,14 +14,20 @@ In this demo, we will walk through the hyper63 api for data, cache, storage and 
 - [Cache](#cache)
 - [Search](#search)
 
+## Getting Started
+
+Before we get started, you need to clone this repository: https://github.com/hyper63/tour 
+Then you need to make sure you have NodeJS v14 or greater installed. And a code editor 
+with a terminal. VS Code is a good choice.
+
 ## Setup
 
-To work with this tutorial, you need to get a token from https://play.hyper63.com
+To work with this tutorial, you need to get a JWT token from https://play.hyper63.com
 enter your email address and a token will be sent to you good for 30 days.
 
 Open a terminal to this directory and set up your token env var.
 
-export HYPER63_TOKEN=....
+export HYPER63_TOKEN=YOUR_TOKEN_HERE
 
 Then run 
 
