@@ -1,5 +1,10 @@
 # Tour of hyper63 API
 
+👋Hello!
+
+Welcome to the tour of the hyper63 services, in this tour, we will guide you through the 
+📦 data service, 💲 cache service, and 🔎 search service. You will get a feel for how they work.
+
 In this demo, we will walk through the hyper63 api for data, cache, storage and search
 
 ## Table of Contents
@@ -211,17 +216,17 @@ Creating a cache store is just like creating a
 data store. Instead of using the data service,
 we use the cache service.
 
-'''
+```
 res = await $.put('/cache/${app}')
-'''
+```
 
 > NOTE: save 'index.js'
 
 expected output
 
-'''
+```
 {"ok": true }
-'''
+```
 
 > NOTE: clear sandbox
 
@@ -229,17 +234,17 @@ remove a cache store
 
 removing a cache store with the DELETE method
 
-'''
+```
 res = await $.delete('/cache/${app}')
-'''
+```
 
 > NOTE: save 'index.js'
 
 expected output
 
-'''
+```
 {"ok": true}
-'''
+```
 
 
 add a key/value pair
@@ -248,41 +253,240 @@ a cache contains a key and a value,
 the key must be a string, and a value,
 which can be any json parsable value.
 
-'''
+```
 res = await $.post('/cache/${app}', {
   key: 'action-2012-avengers',
   value: avengers
 })
-'''
+```
 
 > save 'index.js'
 
 expected output
 
-'''
+```
 { "ok": true }
-'''
+```
 
 
 remove a key/value pair
 
+``` js
+res = await $.delete(`/cache/${app}/action-2012-avengers`)
+```
+
+> NOTE: save `index.js`
+
+expected output
+
+
+``` sh
+#> { "ok": true }
+```
+
+> NOTE: clear sandbox
+
 query a key/value pair
 
-> NOTE: copy file to cache-example.js
+You can run a simple query for a set of keys by using a simple match pattern.
+
+```
+abc* = starts with abc
+*xyz = ends with xyz
+abc*xyz = starts with abc and ends with xyz
+```
+
+To demonstrate, we will add a couple of key/value pairs 
+to the cache.
+
+``` js
+res = await $.post('/cache/${app}', {
+  key: 'action-avengers-2012',
+  value: avenger
+})
+
+res = await $.post('/cache/${app}', {
+  key: 'action-ghostbusters-1984',
+  value: ghostbusters
+})
+```
+
+> NOTE: save `index.js`
+
+expected output
+
+> NOTE: clear sandbox
+
+Next we will query for all keys that start with action.
+
+``` js
+res = await $.post(`/cache/${app}/_query?pattern=action*`)
+```
+
+> Save `index.js`
+
+expected output 
+
+``` sh
+```
+
+> NOTE: clear sandbox
+
+We can also query for all keys that end with 1984
+
+``` js
+res = await $.post(`/cache/${app}/_query?pattern=*1984`)
+```
+
+> Save `index.js`
+
+expected output
+
+``` sh
+```
+
+> NOTE: clear sandbox
+
+Summary
+
+This has been a quick introduction to the cache service, with these basic mechanics you can compose functions to create complex caching patterns to keep your applications responsive as they increase in traffic and need to scale.
+
+For more information about the cache service, check out our docs, at https://docs.hyper63.com/cache-api
 
 ---
 
 ## Search
 
+The search service allows you to create a search index specifying the fields you would
+like to index in each document you provide to the search index. Then it the service gives you the create, read, update and delete commands, for basic search document management. Finally, the search service provides a query command to `search` your index with free text.
+
 create a search index
+
+Just like creating a data store or a cache we use a `put` to create a search index, the one difference, is that we have to provide a mapping object, this object tells the search index, which fields in the documents that we will be posting to the index will be used for the search. The property name to let the index know what fields to index is called `fields` and it takes an `array` of `strings` which should match your property names. You can optionally add another property called `storeFields` this property tells the search index what properties to return with the search results.
+
+``` js
+res = await $.put(`/search/${app}`, { 
+  fields: ['title', 'year'], 
+  storeFields: ['title', 'year', 'id', 'generes'] 
+})
+```
+
+> NOTE: save `index.js`
+
+expected output
+
+``` sh
+```
+
+> NOTE: clear sandbox
+
 
 remove a search index
 
+Using the delete method, we can remove indexes as well.
+
+``` js
+res = $.delete(`/search/${app}`)
+```
+
+> NOTE: save `index.js`
+
+expected output
+
+``` sh
+{"ok": true}
+```
+
+> NOTE: clear sandbox
+
+
 add Documents
+
+In order to search for documents, you need to add them to your search index, we can do that by using `post` one document at a time, or we can use the `_bulk` action to post a collection of documents.
+
+First lets recreate our index
+
+``` js
+res = await $.put(`/search/${app}`, { 
+  fields: ['title', 'year'], 
+  storeFields: ['id', 'title', 'year', 'generes']
+})
+```
+
+> NOTE: save `index.js`
+
+expected output
+
+``` sh
+{ "ok": true}
+```
+
+> NOTE: clear sandbox
+
+Next, lets add our movies as search documents.
+
+``` js
+res = await $.post(`/search/${app}/_bulk`, [ghostbusters, groundhogday, avengers])
+```
+
+> NOTE: save `index.js`
+
+expected output
+
+``` sh
+{"ok": true, results: [] }
+```
+
+> NOTE: clear sandbox
 
 query Index
 
-> NOTE: copy file to search-example.js
+Now that we have our search index created with some documents, lets do a query. A query is a `_query` command that we post to the service. In this command, we need to provide a json body that contains a property called `query`, we can optionally add other properties, like `term` and `filter`, but for now, lets just do a simple query. The query property takes a string that is used to match the search documents.
+
+``` js
+res = await $.post(`/search/${app}/_query`, { query: '1984' })
+```
+
+> NOTE: save `index.js`
+
+expected output
+
+``` sh
+{ "ok": true, matches: [...] }
+```
+
+> NOTE: clear sandbox
+
+Lets do another query, this time on the title.
+
+``` js
+res = await $.post(`/search/${app}/_query`, { query: 'Ghostbusters' })
+```
+
+> NOTE: save `index.js`
+
+expected output
+
+``` sh
+{ "ok": true, matches: [...] }
+```
+
+> NOTE: clear sandbox
+
+Summary
+
+The search service provides a simple and easy to use interface to create search indexes, add/remove documents and query documents using free text. It is a powerful tool for any application and with hyper63 it comes inside the box. For more details about the search service checkout the documentation: https://docs.hyper63.com/search-api
+
+
+### Conclusion
+
+Well, that concludes the tour of the hyper63 service offering for now, we will be adding our storage service to the tour shortly, and more services will be included in the future. If you have a service you would like to see as part of hyper63, go to the discussions board and post your request: https://github.com/hyper63/hyper63/discussions
+
+If you have any problems with this tour feel free to post an issue on https://github.com/hyper63/tour/issues, or submit a pull request to https://github.com/hyper63/tour.
+
+If you enjoyed this tour, give our project a star: https://github.com/hyper63/hyper63 or post a tweet referencing `@hyper632`
+
+👋 Until next time, have a great day! 🐶⚡
 
 ---
 
