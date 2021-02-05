@@ -160,7 +160,7 @@ hyper63 uses a powerful object structured query language similar to
 mongodb, on the backend it transforms it to the appropriate query for 
 the given database.
 
-You can view all of the options here: https://docs.hyper63.com
+You can view all of the options here: https://docs.hyper63.com/query-selector
 
 In this tutorial, we will do a search on document type and year
 less than 2000.
@@ -187,9 +187,17 @@ expected output
 
 > NOTE: clear sandbox
 
+
+Summary
+
+This is a quick tour through the data api, you can read more about the data api at our documentation site: https://docs.hyper63.com
+
 ---
 
 ## Cache
+
+The cache service, gives you a common interface to a cache service, whether it is memory, redis, or elastic cache. You can use the same api to manage key/value objects in a lighting fast cache.
+
 
 create a cache store
 
