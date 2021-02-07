@@ -226,7 +226,7 @@ we use the cache service.
 res = await $.put(`/cache/${app}`)
 ```
 
-> NOTE: save 'index.js'
+> NOTE: save `index.js`
 
 expected output
 
@@ -244,7 +244,7 @@ removing a cache store with the DELETE method
 res = await $.delete(`/cache/${app}`)
 ```
 
-> NOTE: save 'index.js'
+> NOTE: save `index.js`
 
 expected output
 
@@ -266,7 +266,7 @@ res = await $.post(`/cache/${app}`, {
 })
 ```
 
-> save 'index.js'
+> save `index.js`
 
 expected output
 
@@ -306,12 +306,12 @@ To demonstrate, we will add a couple of key/value pairs
 to the cache.
 
 ``` js
-res = await $.post('/cache/${app}', {
+res = await $.post(`/cache/${app}`, {
   key: 'action-avengers-2012',
   value: avenger
 })
 
-res = await $.post('/cache/${app}', {
+res = await $.post(`/cache/${app}`, {
   key: 'action-ghostbusters-1984',
   value: ghostbusters
 })
