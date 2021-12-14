@@ -1,31 +1,12 @@
-const { join, toLower } = require('ramda')
-const request = require('./request')
+import { connect } from 'hyper-connect'
+import fs from 'fs'
+const movies = JSON.parse(fs.readFileSync('./movies.json'))
 
-const url = 'https://play.hyper63.com'
-const token = process.env.HYPER63_TOKEN
+const hyper = connect(process.env.HYPER)
 
-const Movie = (title = '', year = '1980', genres = []) =>
-  ({ id: `${toLower(title)}-${year}`, type: 'movie', title, year, genres })
+console.log('⚡️ Tour of Hyper ⚡️\n\n')
 
-// Ghostbusters, 1984, [action, comedy]
-let ghostbusters = Movie('Ghostbusters', '1984', ['action', 'comedy'])
-// Groundhog Day, 1993, [comedy, fantasy, romance]
-let groundhogday = Movie('Groundhog-Day', '1993', ['comedy', 'fantasy', 'romance'])
-// Avengers, 2012, [action, adventure, sci-fi]
-let avengers = Movie('Avengers', '2012', ['action', 'adventure', 'sci-fi'])
+//<sandbox>
 
-const $ = request(url, token)
-async function main() {
-  let res = 'Welcome to the hyper63 tour! Whoo!'
-  const app = 'yourname-movies'
 
-  /** <sandbox> **/
-
-  /** </sandbox> **/
-
-  console.log(JSON.stringify(res))
-
-}
-
-main()
-
+//</sandbox>

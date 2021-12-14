@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ghostbusters",
+    "type": "movie",
+    "title": "Ghostbusters",
+    "year": "1984"
+  },
+  {
+    "id": "avengers",
+    "type": "movie",
+    "title": "Avengers",
+    "year": "2012"
+  },
+  {
+    "id": "dune",
+    "type": "movie",
+    "title": "Dune",
+    "year": "2021"
+  }
+]

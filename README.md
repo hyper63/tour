@@ -1,11 +1,13 @@
-# Tour of hyper63 API
+<h1 align="center">Tour of hyper ⚡️</h1>
 
 👋 Hello!
 
 Welcome to the tour of the hyper63 services, in this tour, we will guide you through the 
 📦 data service, 💲 cache service, and 🔎 search service. You will get a feel for how they work.
 
-In this demo, we will walk through the hyper63 api for data, cache, storage and search
+In this tour, we will walk through the hyper api methods for data, cache, and search
+
+---
 
 ## Table of Contents
 
@@ -17,72 +19,46 @@ In this demo, we will walk through the hyper63 api for data, cache, storage and 
 ## Getting Started
 
 Before we get started, you need to clone this repository: https://github.com/hyper63/tour 
-Then you need to make sure you have NodeJS v14 or greater installed. And a code editor 
-with a terminal. VS Code is a good choice.
+Then you need to make sure you have NodeJS v16 or greater installed https://nodejs.org. And a code editor 
+with a terminal. VS Code is a good choice. https://code.visualstudio.com
+
+### Prerequisites
+
+* NodeJS v16+ https://nodejs.org
+* Editor https://code.visualstudio.com
+* Github Account https://github.com
+* git https://git-scm.org
 
 ## Setup
 
-To work with this tutorial, you need to get a JWT token from https://play.hyper63.com
-enter your email address and a token will be sent to you good for 30 days.
+The first thing we need to do, is to go to https://dashboard.hyper.io and login with our github account, once on the dashboard applications view, click the `add application` button. To create a new hyper app.
 
-Open a terminal to this directory and set up your token env var.
+> A hyper app is a specific api service for a given name. It called an app because most of the time, this will be your API service layer for the application you are building and you would have one hyper app per application and environment.
 
-export HYPER63_TOKEN=YOUR_TOKEN_HERE
+Open a terminal to this directory and set up your HYPER env variable. In this directory create a new file called `.env` and in this file, you will want to copy the `connection-string` from the hyper dashboard of the new app you created and paste it as the value of the `HYPER` env variable.
+
+.env
+
+``` text
+HYPER=[paste your connection string here]
+```
+
+> How do I get my connection string? Go to https://dashboard.hyper.io login with your github account, and then click on the application you created for this workshop, while viewing the app view, click the document icon to the left of the connection-string label. This will copy the string to your clipboard, now you can paste in your `.env` file.
 
 Then run 
 
 ``` sh
-yarn
-yarn play
+npm install
+npm install hyper-connect
 ```
 
-Open the `index.js` file in your editor, everytime you type, you should see the results
-appear in your terminal.
-
-In the `index.js` file you will notice a `sandbox` section, this is where you want to put the code snippets during the tour, while you can cut and paste, I would recommend you copy them and then save the `index.js`, and see the results appear in your terminal window.
+Open the `index.js` file in your editor, everytime you type, you should see the results appear in your terminal.
 
 > NOTE: after each section, there will be a note to `clear the sandbox` this means to delete all of the code between the `<sandbox></sandbox>`
 
 ---
 
 ## Data
-
-create a data store, in the main function
-
-``` js
-let app = 'yourname-here' + '-movies' // must be lowercase and no spaces
-res = await $.put(`/data/${app}`) // create data store
-```
-> Save `index.js`
-
-expected output
-
-``` sh
-#> {ok: 'true'}
-```
-
-> NOTE: clear sandbox
-
-remove data store
-
-We can remove the data store by using the `DELETE` method
-
-> NOTE: in the future, we may require a querystring param `confirm`
-> to make sure that you want to truly delete the data store.
-
-``` js
-res = await $.delete(`/data/${app}`) // remove data store
-```
-> Save `index.js`
-
-expected output
-
-``` sh
-{ ok: true }
-```
-
-> NOTE: clear the sandbox
-
 
 add a document
 
@@ -95,8 +71,15 @@ In between the `<sandbox></sandbox>` comments add the following
 commands.
 
 ``` js
-await $.put(`/data/${app}`) // create data store
-res = await $.post(`/data/${app}`, ghostbusters)
+const result = await hyper.data.add({
+  id: 'ghostbusters',
+  type: 'movie',
+  title: 'Ghostbusters',
+  year: '1984',
+  genres: ['action', 'comedy']
+})
+
+console.log(result)
 ```
 
 > Save `index.js`
@@ -104,7 +87,7 @@ res = await $.post(`/data/${app}`, ghostbusters)
 expected output
 
 ``` sh
-#> { ok: true, id: 'ghostbusters-1984' }
+#> { ok: true, id: 'ghostbusters' }
 ```
 
 > NOTE: clear the sandbox 
@@ -114,15 +97,22 @@ get a document
 Now that we saved a document, lets get the document by id
 
 ``` js
-res = await $.get(`/data/${app}/${ghostbusters.id}`)
+const result = await hyper.data.get('ghostbusters')
+console.log(result)
 ```
 
 > Save `index.js`
 
 expected output
 
-``` json
-{"id":"ghostbusters-1984","type":"movie","title":"Ghostbusters","year":"1984","genres":["action","comedy"]}
+``` js
+{
+  id: 'ghostbusters',
+  type: 'movie',
+  title: 'Ghostbusters',
+  year: '1984',
+  genres: ['action', 'comedy']
+}
 ```
 
 > NOTE: clear sandbox
@@ -134,7 +124,8 @@ We can update a document using the put method.
 ``` js
 ghostbusters = {...ghostbusters, poster: 'ghostbusters.jpg'}
 // update document
-res = await $.put(`/data/${app}/${ghostbusters.id}`, ghostbusters)
+const result = await hyper.data.update('ghostbusters', ghostbusters)
+console.log(result)
 ```
 
 > Save `index.js`
@@ -142,7 +133,7 @@ res = await $.put(`/data/${app}/${ghostbusters.id}`, ghostbusters)
 expected output
 
 ```
-{"ok":true,"id":"ghostbusters-1984"}
+{"ok":true,"id":"ghostbusters"}
 ```
 
 > NOTE: clear sandbox
@@ -152,7 +143,8 @@ remove a document
 We can also remove documents, by sending a `DELETE` command.
 
 ``` js
-res = await $.delete(`/data/${app}/${ghostbusters.id}`)
+const result = await hyper.data.remove('ghostbusters')
+console.log(result)
 ```
 
 > Save `index.js`
@@ -160,7 +152,7 @@ res = await $.delete(`/data/${app}/${ghostbusters.id}`)
 expected output
 
 ``` json
-{"ok":true,"id":"ghostbusters-1984"}
+{"ok":true,"id":"ghostbusters"}
 ```
 
 > NOTE: clear sandbox
@@ -178,28 +170,41 @@ less than 2000.
 
 
 ``` js
-// first lets add our documents
-
-res = await $.post(`/data/${app}`, ghostbusters)
-res = await $.post(`/data/${app}`, groundhogday)
-res = await $.post(`/data/${app}`, avengers)
-
-res = await $.post(`/data/${app}/_query`, {
-  selector: {
-    type: 'movie',
-    year: {
-      $lt: '2000'
-    }
+const result = await hyper.data.bulk(movies)
+console.log(result)
+const { docs } = await hyper.data.query({
+  type: 'movie',
+  year: {
+    $lt: '2012'
   }
 })
+
+console.log(docs)
 ```
 
 > Save `index.js`
 
 expected output
 
-``` json
-{"ok":true,"docs":[{"id":"groundhogday-1993","type":"movie","title":"GroundhogDay","year":"1993","genres":["fantasy","comedy"]}]}
+``` js
+{
+  ok: true,
+  results: [
+    { ok: true, id: 'ghostbusters' },
+    { ok: true, id: 'avengers' },
+    { ok: true, id: 'dune' }
+  ]
+}
+
+[
+  { type: 'movie', name: 'Avengers', year: '2011', id: 'avengers' },
+  {
+    type: 'movie',
+    name: 'Ghostbusters',
+    year: '1984',
+    id: 'ghostbusters'
+  }
+]
 ```
 
 > NOTE: clear sandbox
@@ -207,51 +212,13 @@ expected output
 
 Summary
 
-This is a quick tour through the data api, you can read more about the data api at our documentation site: https://docs.hyper63.com
+This is a quick tour through the data api, you can read more about the data api at our documentation site: https://docs.hyper.io/cloud
 
 ---
 
 ## Cache
 
 The cache service, gives you a common interface to a cache service, whether it is memory, redis, or elastic cache. You can use the same api to manage key/value objects in a lighting fast cache.
-
-
-create a cache store
-
-Creating a cache store is just like creating a 
-data store. Instead of using the data service,
-we use the cache service.
-
-``` js
-res = await $.put(`/cache/${app}`)
-```
-
-> NOTE: save `index.js`
-
-expected output
-
-``` sh
-{"ok": true }
-```
-
-> NOTE: clear sandbox
-
-remove a cache store
-
-removing a cache store with the DELETE method
-
-``` js
-res = await $.delete(`/cache/${app}`)
-```
-
-> NOTE: save `index.js`
-
-expected output
-
-``` sh
-{"ok": true}
-```
-
 
 add a key/value pair
 
@@ -260,10 +227,10 @@ the key must be a string, and a value,
 which can be any json parsable value.
 
 ``` js
-res = await $.post(`/cache/${app}`, {
-  key: 'action-2012-avengers',
-  value: avengers
-})
+const result = await hyper.cache.add('action-2012-avengers', 
+  { type: 'movie', title: 'Avengers', year: '2012', id: 'avengers' })
+
+console.log(result)
 ```
 
 > save `index.js`
@@ -278,7 +245,8 @@ expected output
 remove a key/value pair
 
 ``` js
-res = await $.delete(`/cache/${app}/action-2012-avengers`)
+const result = await hyper.cache.remove('action-2012-avengers')
+console.log(result)
 ```
 
 > NOTE: save `index.js`
@@ -306,15 +274,22 @@ To demonstrate, we will add a couple of key/value pairs
 to the cache.
 
 ``` js
-res = await $.post(`/cache/${app}`, {
-  key: 'action-avengers-2012',
-  value: avenger
+const result1 = await hyper.cache.add('action-2012-avengers', {
+  "id": "avengers",
+  "type": "movie",
+  "title": "Avengers",
+  "year": "2012"
 })
 
-res = await $.post(`/cache/${app}`, {
-  key: 'action-ghostbusters-1984',
-  value: ghostbusters
+const result2 = await hyper.cache.add('action-1984-ghostbusters', {
+  "id": "ghostbusters",
+  "type": "movie",
+  "title": "Ghostbusters",
+  "year": "1984"
 })
+
+console.log(result)
+console.log(result2)
 ```
 
 > NOTE: save `index.js`
@@ -326,7 +301,8 @@ expected output
 Next we will query for all keys that start with action.
 
 ``` js
-res = await $.post(`/cache/${app}/_query?pattern=action*`)
+const result = await hyper.cache.query('action*')
+console.log(result.docs)
 ```
 
 > Save `index.js`
@@ -334,6 +310,21 @@ res = await $.post(`/cache/${app}/_query?pattern=action*`)
 expected output 
 
 ``` sh
+[
+  {
+    key: 'action-2012-avengers',
+    value: { id: 'avengers', type: 'movie', title: 'Avengers', year: '2012' }
+  },
+  {
+    key: 'action-1984-ghostbusters',
+    value: {
+      id: 'ghostbusters',
+      type: 'movie',
+      title: 'Ghostbusters',
+      year: '1984'
+    }
+  }
+]
 ```
 
 > NOTE: clear sandbox
@@ -341,7 +332,8 @@ expected output
 We can also query for all keys that end with 1984
 
 ``` js
-res = await $.post(`/cache/${app}/_query?pattern=*1984`)
+const result = await hyper.cache.query('*1984*')
+console.log(result.docs)
 ```
 
 > Save `index.js`
@@ -349,6 +341,17 @@ res = await $.post(`/cache/${app}/_query?pattern=*1984`)
 expected output
 
 ``` sh
+[
+  {
+    key: 'action-1984-ghostbusters',
+    value: {
+      id: 'ghostbusters',
+      type: 'movie',
+      title: 'Ghostbusters',
+      year: '1984'
+    }
+  }
+]
 ```
 
 > NOTE: clear sandbox
@@ -370,53 +373,16 @@ create a search index
 
 Just like creating a data store or a cache we use a `put` to create a search index, the one difference, is that we have to provide a mapping object, this object tells the search index, which fields in the documents that we will be posting to the index will be used for the search. The property name to let the index know what fields to index is called `fields` and it takes an `array` of `strings` which should match your property names. You can optionally add another property called `storeFields` this property tells the search index what properties to return with the search results.
 
-``` js
-res = await $.put(`/search/${app}`, { 
-  fields: ['title', 'year'], 
-  storeFields: ['title', 'year', 'id', 'generes'] 
-})
-```
-
-> NOTE: save `index.js`
-
-expected output
-
-``` sh
-```
-
-> NOTE: clear sandbox
-
-
-remove a search index
-
-Using the delete method, we can remove indexes as well.
-
-``` js
-res = $.delete(`/search/${app}`)
-```
-
-> NOTE: save `index.js`
-
-expected output
-
-``` sh
-{"ok": true}
-```
-
-> NOTE: clear sandbox
-
-
 add Documents
 
 In order to search for documents, you need to add them to your search index, we can do that by using `post` one document at a time, or we can use the `_bulk` action to post a collection of documents.
 
-First lets recreate our index
+
+Lets add our movies as search documents.
 
 ``` js
-res = await $.put(`/search/${app}`, { 
-  fields: ['title', 'year'], 
-  storeFields: ['id', 'title', 'year', 'generes']
-})
+const result = await hyper.search.load(movies)
+console.log(result)
 ```
 
 > NOTE: save `index.js`
@@ -424,23 +390,10 @@ res = await $.put(`/search/${app}`, {
 expected output
 
 ``` sh
-{ "ok": true}
-```
-
-> NOTE: clear sandbox
-
-Next, lets add our movies as search documents.
-
-``` js
-res = await $.post(`/search/${app}/_bulk`, [ghostbusters, groundhogday, avengers])
-```
-
-> NOTE: save `index.js`
-
-expected output
-
-``` sh
-{"ok": true, results: [] }
+{
+  ok: true,
+  results: [ { index: [Object] }, { index: [Object] }, { index: [Object] } ]
+}
 ```
 
 > NOTE: clear sandbox
@@ -450,7 +403,8 @@ query Index
 Now that we have our search index created with some documents, lets do a query. A query is a `_query` command that we post to the service. In this command, we need to provide a json body that contains a property called `query`, we can optionally add other properties, like `term` and `filter`, but for now, lets just do a simple query. The query property takes a string that is used to match the search documents.
 
 ``` js
-res = await $.post(`/search/${app}/_query`, { query: '1984' })
+const result = await hyper.search.query('1984')
+console.log(result)
 ```
 
 > NOTE: save `index.js`
@@ -458,7 +412,18 @@ res = await $.post(`/search/${app}/_query`, { query: '1984' })
 expected output
 
 ``` sh
-{ "ok": true, matches: [...] }
+
+{
+  ok: true,
+  matches: [
+    {
+      id: 'ghostbusters',
+      type: 'movie',
+      title: 'Ghostbusters',
+      year: '1984'
+    }
+  ]
+}
 ```
 
 > NOTE: clear sandbox
@@ -466,7 +431,8 @@ expected output
 Lets do another query, this time on the title.
 
 ``` js
-res = await $.post(`/search/${app}/_query`, { query: 'Ghostbusters' })
+const result = await hyper.search.query('Ghostbusters')
+console.log(result)
 ```
 
 > NOTE: save `index.js`
@@ -474,7 +440,17 @@ res = await $.post(`/search/${app}/_query`, { query: 'Ghostbusters' })
 expected output
 
 ``` sh
-{ "ok": true, matches: [...] }
+{
+  ok: true,
+  matches: [
+    {
+      id: 'ghostbusters',
+      type: 'movie',
+      title: 'Ghostbusters',
+      year: '1984'
+    }
+  ]
+}
 ```
 
 > NOTE: clear sandbox
@@ -486,11 +462,11 @@ The search service provides a simple and easy to use interface to create search 
 
 ### Conclusion
 
-Well, that concludes the tour of the hyper63 service offering for now, we will be adding our storage service to the tour shortly, and more services will be included in the future. If you have a service you would like to see as part of hyper63, go to the discussions board and post your request: https://github.com/hyper63/hyper63/discussions
+Well, that concludes the tour of the hyper63 service offering for now, we will be adding our storage service to the tour shortly, and more services will be included in the future. If you have a service you would like to see as part of hyper63, go to the discussions board and post your request: https://github.com/hyper63/hyper/discussions
 
 If you have any problems with this tour feel free to post an issue on https://github.com/hyper63/tour/issues, or submit a pull request to https://github.com/hyper63/tour.
 
-If you enjoyed this tour, give our project a star: https://github.com/hyper63/hyper63 or post a tweet referencing `@hyper632`
+If you enjoyed this tour, give our project a star: https://github.com/hyper63/hyper63 or post a tweet referencing `@_hyper_io`
 
 👋 Until next time, have a great day! 🐶⚡
 
