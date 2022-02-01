@@ -122,6 +122,7 @@ update a document
 We can update a document using the put method.
 
 ``` js
+let ghostbusters = await hyper.data.get('ghostbusters')
 ghostbusters = {...ghostbusters, poster: 'ghostbusters.jpg'}
 // update document
 const result = await hyper.data.update('ghostbusters', ghostbusters)
@@ -288,7 +289,7 @@ const result2 = await hyper.cache.add('action-1984-ghostbusters', {
   "year": "1984"
 })
 
-console.log(result)
+console.log(result1)
 console.log(result2)
 ```
 
